@@ -25,11 +25,11 @@ const UpdateForm = ({movies, editMovie}) => {
 }, [movies, id])
 
 const changeHandler = ev => {
-    // ev.persist();
-    // let value = ev.target.value;
-    // if (ev.target.name === 'price') {
-    //   value = parseInt(value, 10);
-    // }
+    ev.persist();
+    let value = ev.target.value;
+    if (ev.target.name === 'price') {
+      value = parseInt(value, 10);
+    }
     setMovie({
         ...movie,
         [ev.target.name]: ev.target.value
