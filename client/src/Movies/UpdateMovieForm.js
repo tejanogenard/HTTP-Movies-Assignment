@@ -7,58 +7,77 @@ const initalMovie = {
     title: "",
     director: "",
     metascore: Number,
-    stars: [""] // can we do this 
+    stars: [] 
 }
 
-const UpdateForm = props => {
- // use params and history obejcts 
+const UpdateForm = ({movies, editMovie}) => {
  const { id } = useParams()
  const { push } = useHistory()
-const [movie, setMovie] = useState(initalMovie)
+ const [movie, setMovie] = useState(initalMovie)
+
+ console.log('form values', initalMovie)
+ useEffect(() => {
+  const movieToUpdate = movies.find(e => `${e.id}` === id)
+      if(movieToUpdate){
+        console.log(movieToUpdate)
+          setMovie(movieToUpdate)
+      }
+}, [movies, id])
 
 const changeHandler = ev => {
-    ev.persist();
-    let value = ev.target.value;
-    if (ev.target.name === 'price') {
-      value = parseInt(value, 10);
-    }
+    // ev.persist();
+    // let value = ev.target.value;
+    // if (ev.target.name === 'price') {
+    //   value = parseInt(value, 10);
+    // }
     setMovie({
         ...movie,
-        [ev.target.name]: value
-    })
+        [ev.target.name]: ev.target.value
+  })
 }
- // ********** Find the item and set it to state ********** //
-  // get the id from params
-  // loop through the items list to find the item
-  // set the item to state to pre-populate the form
- // ********** Find the item and set it to state 
-  useEffect(() => {
-    const movieToUpdate = props.items.find(e => `${e.id}` === id)
-        if(movieToUpdate){
-            setMovie(movieToUpdate)
-        }
-  }, [props.movie, id])
 
-  const handleSubmit = ev => {
-    ev.preventDefault()
+  const handleSubmit = () => {
       axios
-        .put(`http://localhost:3000/api/movies/${id}`,movie)
-        .then(res => console.log(res))
-
-  }
-
-//make a put request to edit the movie 
-//.put(`http://localhost:3333/items/${id}`, item)
-      
-
+        .put(`http://localhost:5000/api/movies/${id}`,movie)
+        .then(res => {
+          console.log(res,"&&&&&&")
+          editMovie()
+        })
+        .catch(err => console.log(err))
+        push('/')
+   }
 
 return(
     <>
-        <h2></h2>
-        
-
-
+      <form onSubmit={handleSubmit}>
+        <input 
+          name = "title"
+          type = "text" 
+          value = {movie.title}
+          onChange = {changeHandler}
+          />
+        <input
+          name = "director"
+          type = "text"
+          value = {movie.director}
+          onChange = {changeHandler}
+          />
+        <input 
+          name = "metascore"
+          type = "number"
+          value = {movie.metascore}
+          onChange = {changeHandler}
+          />
+        <input 
+          name = "stars"
+          type = "text"
+          value = {movie.stars}
+          onChange = {changeHandler}
+          />
+          <button>Update!</button>
+      </form>
     </>
     )
 }
 export default UpdateForm
+
